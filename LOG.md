@@ -42,5 +42,5 @@ Warm-up:
 - Hard: why trap doesn't run on kill -9 (SIGKILL never reaches the process); start limit (5 fails in 10s → stops retrying); exit 203/EXEC = couldn't run ExecStart (check the journal for why)
 - Learned: journalctl -u, -n, -f, --since "10 min ago"/today, -p err, -b, --no-pager, logger -p user.err, trap '...' TERM, systemctl stop = SIGTERM to the whole CGroup, Failed with result 'signal'/'exit-code'/'timeout', restart counter, Start request repeated too quickly, reset-failed, grep -c, pgrep -af, grep [h]eartbeat trick
 - Rule: grep "Failed with result" for any crash; status shows what, journal shows why
-- Next: networking basics (ip, ss -tulpn = which process is listening on which port, curl) — links processes to the network
+- Next: bash scripting basics + awk, then build the log-analysis script + cron
 **Week total:**
