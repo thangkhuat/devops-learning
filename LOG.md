@@ -43,4 +43,35 @@ Warm-up:
 - Learned: journalctl -u, -n, -f, --since "10 min ago"/today, -p err, -b, --no-pager, logger -p user.err, trap '...' TERM, systemctl stop = SIGTERM to the whole CGroup, Failed with result 'signal'/'exit-code'/'timeout', restart counter, Start request repeated too quickly, reset-failed, grep -c, pgrep -af, grep [h]eartbeat trick
 - Rule: grep "Failed with result" for any crash; status shows what, journal shows why
 - Next: bash scripting basics + awk, then build the log-analysis script + cron
+
+### Saturday 17 Oct - Bash scripting, awk & cron (3h)
+Warm-up:
+- Recall 2.5/5: /proc missed "live/virtual"; mixed up journalctl vs systemctl status; forgot reset-failed for start limit; kill only takes PIDs (names → pgrep/pkill)
+- Pipe: sort -r is text order (9 > 12) → use sort -rn for counts
+- Installed tealdeer (tldr). Ubuntu dropped the old tldr package → apt search <name> to find the right one
+
+1st hour:
+- Done: run scripts 3 ways, shebang, set -euo pipefail, arguments + usage check, exit codes, svc-check.sh
+- Hard: remembering flags; which set flag does what; $? only holds the LAST command's exit code. Rembering the flag for each command line (install tldr for quicksearch)
+- Learned: ./ needs +x, bash file.sh only needs read; ./ because current dir isn't in $PATH; $0 $1 $# $?; scripts inherit env vars (WSL sets NAME=hostname); VAR=value cmd = env var for that one command; set -e (exit on fail) / -u (unset var = error) / -o pipefail (any pipe stage fails); >&2 = stderr; 2>/dev/null; [[ $# -ne 1 ]]; if <command> tests its exit code; systemctl is-active/is-enabled --quiet; exit codes 0 / 1 / 127 / 203
+- Rule: every script starts with #!/usr/bin/env bash + set -euo pipefail. UPPERCASE = env vars, lowercase = my vars. Always quote "$var". cmd; echo $? to check a result
+- Flags I looked up: cut -d -f, sort -rn, uniq -c, pgrep -a, pkill -x
+
+2nd hour:
+- Done: generated a 500-line access.log with a bash loop + arrays, awk fields, patterns, counting with END + arrays, split(), printf, error-rate summary
+- Hard: quoting text in awk (bare words are variables → silent 0 results); >= 400 not >= 404 / > 400 (write the rule I mean, not one that fits today's data); building printf correctly
+- Learned: bash arrays ips=(...), ${#arr[@]}, $RANDOM, %; awk 'pattern {action}' file; $0 $1 $NF NF NR; access.log fields $1 IP / $4 time / $7 path / $9 status / $10 bytes; patterns ==, >=, &&, /regex/, \. = literal dot; END runs once after the last line, BEGIN once before the first; count[$x]++ then for (k in count) | sort -rn; sum += $10; total/NR = average; -F: for /etc/passwd; split($4, t, ":"); printf %d %s %-8s %.1f %% \n
+- Rule: a suspicious 0 means check the command (drop wc -l, look at the matched lines). Text goes in "quotes" in awk. printf: fixed template, values as arguments. Check results against what I expect (~20% 5xx)
+- Flags I looked up: awk -F, sort -nr
+- Next: build log-report.sh + schedule it with cron
+
+3rd hour:
+- Done: built log-report.sh in 4 stages (input checks → report → save to dated file → alert exit code), scheduled it with cron, investigated a gap in cron runs
+- Hard: spaces around = (log_file = "$1" → "command not found"); $9 > 400 instead of >= 400 again (3rd time); remembering to quote "$log_file" everywhere; testing BOTH the pass and fail paths
+- Learned: [[ -f / -r / -s ]] and ! to negate; validate inputs BEFORE changing anything (mkdir after checks); $HOME instead of hardcoded paths; { ... } | tee file = save + show; (( )) for whole-number maths (no $ needed); awk printf "%d" to hand bash an integer; exit codes 0 healthy / 1 script failed / 2 alert; cron fields m h dom mon dow, */2, crontab -e/-l; absolute paths in cron; >> file 2>&1; journalctl -u cron shows CMD lines; realpath
+- Investigation: runs stopped 19:38–20:34 → laptop slept (PIDs continued = resumed, not rebooted); on wake, cron ran the job once at an odd time, no catch-up. Cron reports were 25 bytes bigger = absolute path in the header. Cron's files had different permissions = different environment (umask)
+- Rule: cron only logs that a job STARTED, never whether it succeeded. Exit 2 is silently ignored → the alerting has to come from the script or monitoring. Cron skips runs while asleep (use anacron or systemd timers with Persistent=true for laptops)
+- Flags I looked up: date +%F %T %H%M, tee, mkdir -p
+- Next: systemd timer version of log-report (compare with cron), make the script send a real alert, then git basics to put ~/devops-learning under version control
+
 **Week total:**

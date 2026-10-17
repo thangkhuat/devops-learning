@@ -1,0 +1,175 @@
+=== Log report: /home/huuth/devops-learning/access.log ===
+Generated: 2026-10-17 19:32:01
+
+Total requests:      500
+Errors (4xx+5xx):    186
+Error rate:          37.2%
+Total bytes:         1235141
+
+--- Status codes ---
+208 200
+73 404
+69 201
+59 503
+54 500
+37 301
+
+--- Top 5 IPs ---
+105 192.168.1.20
+88 10.0.0.2
+82 10.0.0.1
+79 172.16.0.5
+75 10.0.0.3
+
+Report saved to /home/huuth/devops-learning/reports/report-2026-10-17_1932.txt
+Error rate (37%) exceeds threshold (20%)
+=== Log report: /home/huuth/devops-learning/access.log ===
+Generated: 2026-10-17 19:34:01
+
+Total requests:      500
+Errors (4xx+5xx):    186
+Error rate:          37.2%
+Total bytes:         1235141
+
+--- Status codes ---
+208 200
+73 404
+69 201
+59 503
+54 500
+37 301
+
+--- Top 5 IPs ---
+105 192.168.1.20
+88 10.0.0.2
+82 10.0.0.1
+79 172.16.0.5
+75 10.0.0.3
+
+Report saved to /home/huuth/devops-learning/reports/report-2026-10-17_1934.txt
+Error rate (37%) exceeds threshold (20%)
+=== Log report: /home/huuth/devops-learning/access.log ===
+Generated: 2026-10-17 19:36:01
+
+Total requests:      500
+Errors (4xx+5xx):    186
+Error rate:          37.2%
+Total bytes:         1235141
+
+--- Status codes ---
+208 200
+73 404
+69 201
+59 503
+54 500
+37 301
+
+--- Top 5 IPs ---
+105 192.168.1.20
+88 10.0.0.2
+82 10.0.0.1
+79 172.16.0.5
+75 10.0.0.3
+
+Report saved to /home/huuth/devops-learning/reports/report-2026-10-17_1936.txt
+Error rate (37%) exceeds threshold (20%)
+=== Log report: /home/huuth/devops-learning/access.log ===
+Generated: 2026-10-17 19:38:01
+
+Total requests:      500
+Errors (4xx+5xx):    186
+Error rate:          37.2%
+Total bytes:         1235141
+
+--- Status codes ---
+208 200
+73 404
+69 201
+59 503
+54 500
+37 301
+
+--- Top 5 IPs ---
+105 192.168.1.20
+88 10.0.0.2
+82 10.0.0.1
+79 172.16.0.5
+75 10.0.0.3
+
+Report saved to /home/huuth/devops-learning/reports/report-2026-10-17_1938.txt
+Error rate (37%) exceeds threshold (20%)
+=== Log report: /home/huuth/devops-learning/access.log ===
+Generated: 2026-10-17 20:34:41
+
+Total requests:      500
+Errors (4xx+5xx):    186
+Error rate:          37.2%
+Total bytes:         1235141
+
+--- Status codes ---
+208 200
+73 404
+69 201
+59 503
+54 500
+37 301
+
+--- Top 5 IPs ---
+105 192.168.1.20
+88 10.0.0.2
+82 10.0.0.1
+79 172.16.0.5
+75 10.0.0.3
+
+Report saved to /home/huuth/devops-learning/reports/report-2026-10-17_2034.txt
+Error rate (37%) exceeds threshold (20%)
+=== Log report: /home/huuth/devops-learning/access.log ===
+Generated: 2026-10-17 20:36:01
+
+Total requests:      500
+Errors (4xx+5xx):    186
+Error rate:          37.2%
+Total bytes:         1235141
+
+--- Status codes ---
+208 200
+73 404
+69 201
+59 503
+54 500
+37 301
+
+--- Top 5 IPs ---
+105 192.168.1.20
+88 10.0.0.2
+82 10.0.0.1
+79 172.16.0.5
+75 10.0.0.3
+
+Report saved to /home/huuth/devops-learning/reports/report-2026-10-17_2036.txt
+Error rate (37%) exceeds threshold (20%)
+=== Log report: /home/huuth/devops-learning/access.log ===
+Generated: 2026-10-17 20:38:01
+
+Total requests:      500
+Errors (4xx+5xx):    186
+Error rate:          37.2%
+Total bytes:         1235141
+
+--- Status codes ---
+208 200
+73 404
+69 201
+59 503
+54 500
+37 301
+
+--- Top 5 IPs ---
+105 192.168.1.20
+88 10.0.0.2
+82 10.0.0.1
+79 172.16.0.5
+75 10.0.0.3
+
+Report saved to /home/huuth/devops-learning/reports/report-2026-10-17_2038.txt
+Error rate (37%) exceeds threshold (20%)
