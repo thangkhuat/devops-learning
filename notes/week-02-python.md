@@ -1,0 +1,7 @@
+### Week 2 start: Python setup + first tests (10:00–10:50)
+- Done: venv for logstat, .gitignore for Python junk, pytest installed + requirements-dev.txt, parse_line() with 2 tests (fields + bad lines), red → green twice
+- Hard: predicting on brand-new topics (venv, source vs ./) → now: concept first, then predict; AssertionError vs the function's own error
+- Learned: Ubuntu splits venv into python3.X-venv (read the whole error, it gave the fix); venv = project-local python + packages; activate puts .venv/bin first in PATH → must be sourced (child process gets a COPY of env, changes die with it); Python 3.13+ venv writes its own .gitignore (*); pip freeze pins everything incl. dependencies; pytest runs test_*.py / test_* functions with plain assert; > marks the failing line, E shows the error; split() = awk fields but 0-indexed ($9 → [8]); if __name__ == "__main__" runs only when executed, not imported; function returns wrong value → AssertionError, function crashes → its own error (IndexError / ValueError)
+- Rule: write the test first, watch it fail for the RIGHT reason, then make it pass. Parse functions return data, they don't print. Catch only the errors you expect. Commit the recipe (requirements-dev.txt), not the venv
+- Flags I looked up: python3 -m venv .venv, source .venv/bin/activate, pip freeze > requirements-dev.txt, pytest, which python
+- Next: read the whole access.log → counts by status / top IPs (port log-report.sh logic), CLI arguments with argparse, more tests

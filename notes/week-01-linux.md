@@ -109,4 +109,19 @@ Next:
 - Optional: real push alert (curl to a push service) instead of journal only
 - Optional warm-up: retention policy for reports/ (find -mtime, delete > 7 days)
 
-**Week total:**
+### Incident: alerting silently broken (09:00–09:33)
+
+Timeline:
+- Sun 17:00 last good alert → ~17:10 checkout (README/PR wrap-up) rewrote alert.sh without x
+- Mon 08:54 boot → Persistent=true catch-up run → log-report failed (exit 2, 37% errors) → OnFailure → alert service failed 203/EXEC "Permission denied"
+- 09:00 hourly run → same 203/EXEC → no alerts since boot
+- 09:11 chmod +x alert.sh + systemctl start → ALERT fired (stopped the bleeding); 09:11:40 re-test suppressed (cooldown)
+- 09:21 root cause found: core.fileMode=false in .git/config
+- 09:26 PR merged, all scripts 100755 in Git, survived switch + pull
+- 09:27 end-to-end test → script ran, suppressed (16 min < 30 since 09:11) ✅
+
+- Done: diagnosed 203/EXEC, traced it past the symptom to the root cause, fixed all 8 scripts in one PR (mode only), verified end to end
+- Hard: telling apart "file lost x" vs "why it lost x"; predicting state file time (contradicted my own Q1 answer); epoch timestamps
+- Learned: 203/EXEC = systemd couldn't start it (script never ran) vs status=2 = script ran and chose to exit; Git stores only 100644 / 100755 for files; core.fileMode=false → Git ignores chmod, every file committed as 100644; checkout rewrites files using the stored mode; log-report.sh only survived because Git hadn't rewritten it (time bomb); ls -l shows mtime = when content was last written; git diff --summary shows mode-only changes; bash script.sh doesn't need x, ./script.sh and ExecStart= do; date -d @epoch converts timestamps; manual tests share the cooldown with real alerts
+- Rule: stop the bleeding first, then find root cause (my manual chmod would've been undone by the next checkout). Fixing the file ≠ fixing the incident → test the service end to end. Check core.fileMode on any repo created from Windows. Verify a change is mode-only before staging
+- Flags I looked up: namei -l, git ls-files -s, git config --show-origin, git diff --summary, journalctl --since/--until, date -d @
