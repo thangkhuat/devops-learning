@@ -1,6 +1,6 @@
 # Learning Log
 
-## Week 1 (12–18 Oct) — Linux & Bash log analyser
+## Week 1 (11–18 Oct) — Linux & Bash log analyser
 
 ### Sun 11 Oct — Setup (~1 h)
 - Done: WSL Ubuntu, Git + SSH to GitHub, repo moved to ~/, nginx logging
@@ -73,5 +73,40 @@ Warm-up:
 - Rule: cron only logs that a job STARTED, never whether it succeeded. Exit 2 is silently ignored → the alerting has to come from the script or monitoring. Cron skips runs while asleep (use anacron or systemd timers with Persistent=true for laptops)
 - Flags I looked up: date +%F %T %H%M, tee, mkdir -p
 - Next: systemd timer version of log-report (compare with cron), make the script send a real alert, then git basics to put ~/devops-learning under version control
+
+### Sunday 18 Oct - systemd timers, alerting & Git PRs (2.5h)
+Week 1 complete ✅ (Linux & Bash → log-analysis script, scheduled + alerting, README, merged via PR)
+
+Warm-up:
+- Recall 3/5 (up from 2.5): missed -u (unset variable = error); cron failures = different environment (cwd is $HOME, minimal PATH, different umask), not just "file failed"; catch-up tools = anacron / systemd timer Persistent=true
+- Got $9 >= 400 right first time ✅. print count+0 so 0 matches prints 0 not blank
+- systemctl is-system-running → running (systemd works in WSL)
+- Git habit to fix: I'd been committing straight to main → from today every piece of work goes on a branch + PR
+
+1st hour:
+- Done: branch systemd-timer, wrote log-report.service (oneshot) + log-report.timer, installed, enabled, confirmed it fires by itself, removed the cron job
+- Hard: "Unit not found" → forgot systemd only reads /etc/systemd/system, not my repo; skipped my predictions 3 times; [Install] reasoning ("start time" is OnCalendar, not [Install])
+- Learned: Type=oneshot (runs, finishes, exits); oneshot healthy = inactive (dead), problem = failed; any non-zero exit → unit failed, exit code + output kept in journal (cron kept neither); status=2/INVALIDARGUMENT is just systemd's label for code 2, read the number; exit 1 and 2 both show "failed"; timer starts the service with the same name; OnCalendar format DayOfWeek Y-M-D H:M:S, *:0/2 = every 2 min; normalized form shows the full meaning; AccuracySec default 1min (sub-minute timers not precise); Persistent=true catches up missed runs; [Install] + enable = start at boot → enable the timer, not the service; list-timers shows NEXT / LEFT / LAST / ACTIVATES
+- Rule: repo copy = source of truth, /etc copy = what runs → after any edit: cp, daemon-reload, restart (drift). Remove the old scheduler before adding a new one (both would write the same HHMM filename and overwrite). Predict BEFORE running
+- Flags I looked up: systemd-analyze calendar --iterations=3, systemctl enable --now, systemctl list-timers, journalctl -n 20 --no-pager, journalctl -xeu (noisy)
+
+2nd hour:
+- Done: designed alerting against alert fatigue, wrote alert.sh with 30 min cooldown + state file, tested all paths (missing / recent / expired / corrupt), fixed corrupt-file crash, refactored to elif + regression tested, wired OnFailure=log-report-alert.service, watched it alert then suppress, timer switched to hourly
+- Hard: predicting the garbage state file (crash via -u: bare word in (( )) = variable name); thought running as root would error (it works silently in /root/.cache = 2 separate cooldowns); OnCalendar 0/1:*:* = every SECOND
+- Learned: alert fatigue → rate limit / cooldown (other options: run less often, alert on state change, require sustained failure); date +%s = epoch seconds; state file pattern; [[ "$x" =~ ^[0-9]+$ ]] to validate numbers; fail open (when unsure, alert) vs fail closed (silent = worst case); last=$now would have suppressed forever; OnFailure= in [Unit]; $HOME depends on User=; journalctl -f follows live; * means "every", not "any one"; hourly = *:00:00
+- Rule: validate any input read from a file. Alerting fails open: a duplicate alert beats a missed one. After a refactor, re-run every test path. Always set User= and check where state files land. Pin smaller fields for "once per X" + check with systemd-analyze calendar
+- Flags I looked up: date +%s, dirname, mkdir -p, journalctl -f
+
+Last 30 min:
+- Done: README (files, run by hand, exit codes, install, alerting, why timer vs cron), PR #1 merged; PR #2 .gitignore for generated files
+- Hard: README template prompts left in; markdown tables/code blocks not rendering; first draft overclaimed ("prevent malicious attempts") and described old code
+- Learned: README at repo root shows on GitHub; scripts don't go in /etc/systemd/system, only units; markdown tables need |---| row, commands need ```bash fences; push output 946baa3..8d41fd6 = branch already existed (vs * [new branch]); -u sets upstream tracking; PR → review Files changed → merge → delete branch → git switch main + git pull; git fetch --prune removes stale remote branches; generated output stays out of Git (.gitignore); git rm --cached = untrack but keep on disk
+- Rule: main only changes through PRs; every session starts with git switch -c <topic>. A README that describes old code is worse than none. Commit what I write, not what my code produces
+- Flags I looked up: git push -u, git branch -a, git fetch --prune, git rm -r --cached
+
+Next:
+- Week 2: Python CLI with pytest
+- Optional: real push alert (curl to a push service) instead of journal only
+- Optional warm-up: retention policy for reports/ (find -mtime, delete > 7 days)
 
 **Week total:**
