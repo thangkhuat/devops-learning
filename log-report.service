@@ -1,0 +1,7 @@
+[Unit]
+Description=Analyse access.log and generate a dated report
+
+[Service]
+Type=oneshot
+User=huuth
+ExecStart=/home/huuth/devops-learning/scripts/log-report.sh /home/huuth/devops-learning/access.log

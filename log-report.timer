@@ -1,0 +1,9 @@
+[Unit]
+Description=Timer for reading access.log and generate dated report
+
+[Timer]
+OnCalendar=*:0/2
+Persistent=true
+
+[Install]
+WantedBy=timers.target
