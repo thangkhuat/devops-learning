@@ -1,0 +1,7 @@
+[Unit]
+Description=Send alert when log-report fails (30 min cooldown)
+
+[Service]
+Type=oneshot
+User=huuth
+ExecStart=/home/huuth/devops-learning/alert.sh

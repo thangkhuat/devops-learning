@@ -1,5 +1,6 @@
 [Unit]
 Description=Analyse access.log and generate a dated report
+OnFailure=log-report-alert.service
 
 [Service]
 Type=oneshot
