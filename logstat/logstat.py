@@ -1,3 +1,5 @@
+from collections import Counter
+
 def parse_line(line):
     #Extract parts of the log line
     fields = line.split()
@@ -13,6 +15,15 @@ def parse_line(line):
         }
     except (IndexError, ValueError):
         return None
+
+def count_statuses(lines):
+    counts = Counter()
+    for line in lines:
+        result = parse_line(line)
+        if result is None:
+            continue
+        counts[result["status"]] += 1
+    return counts
 
 if __name__ == "__main__":
     print(parse_line('10.0.0.1 - - [17/Oct/2026:00:30:00 +1100] "GET /health HTTP/1.1" 201 372'))
