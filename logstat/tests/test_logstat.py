@@ -44,9 +44,14 @@ def test_top_ip_return_most_common_ip():
 def test_top_ip_with_more_than_available_ips():
     result = top_ips(LINES, 5)
     assert result == [('10.0.0.1',2), ('192.168.1.20',1)]
-    
-@pytest.mark.parametrize("test_input,expected", [(-3, 2), (0, 2)])
-def test_top_ip_rejects_non_positive(test_input, expected):
+
+def test_main_rejects_nonexistent_file():
+    with pytest.raises(SystemExit) as exc_info: 
+        main(["nonexistent.log"])
+    assert exc_info.value.code == 'logstat: nonexistent.log: no such file'
+
+@pytest.mark.parametrize("test_input", (-3, 0))
+def test_main_rejects_non_positive(test_input):
     with pytest.raises(SystemExit) as exc_info: 
         main(["access.log", "--top", str(test_input)])
-    assert exc_info.value.code == expected
+    assert exc_info.value.code == 2
