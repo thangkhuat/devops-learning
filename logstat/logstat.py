@@ -1,4 +1,7 @@
 from collections import Counter
+import argparse
+import sys
+
 
 def parse_line(line):
     #Extract parts of the log line
@@ -31,5 +34,28 @@ def count_statuses(lines):
 def top_ips(lines, n):
     return count_field(lines, "ip").most_common(n)
 
+def main():
+    parser = argparse.ArgumentParser(description="Summarise an access log")
+    parser.add_argument("logfile")                       # required, positional ($1)
+    parser.add_argument("--top", type=int, default=5)    # optional flag
+    args = parser.parse_args()
+
+    try:
+        with open(args.logfile) as f:
+            lines = f.readlines()
+    except FileNotFoundError:
+        sys.exit(f"logstat: {args.logfile}: no such file")
+
+    statuses = count_statuses(lines)
+    ips = top_ips(lines, args.top)
+
+    print(f"Status codes:")
+    for status, count in sorted(statuses.items()):
+        print(f"{status:<15}  {count:>5}")
+
+    print(f"\nTop {len(ips)} IPs:")
+    for ip, count in ips:
+        print(f"{ip:<15}  {count:>5}")
+
 if __name__ == "__main__":
-    print(parse_line('10.0.0.1 - - [17/Oct/2026:00:30:00 +1100] "GET /health HTTP/1.1" 201 372'))
+    main()
