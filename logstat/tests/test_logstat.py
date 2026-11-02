@@ -36,5 +36,9 @@ def test_count_statuses_counts_codes():
     assert result == {200: 2, 404: 1}
 
 def test_top_ip_return_most_common_ip():
-    result = top_ips(LINES,2)
+    result = top_ips(LINES, 2)
     assert result == [('10.0.0.1',2),('192.168.1.20',1)]
+
+def test_top_ip_with_more_than_available_ips():
+    result = top_ips(LINES, 5)
+    assert result == [('10.0.0.1',2), ('192.168.1.20',1)]
