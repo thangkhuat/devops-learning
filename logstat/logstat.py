@@ -26,12 +26,10 @@ def count_field(lines, field):
     return counts
 
 def count_statuses(lines):
-    result = count_field(lines, "status")
-    return result
+    return count_field(lines, "status")
 
 def top_ips(lines, n):
-    result = count_field(lines, "ip")
-    return result.most_common(n)
+    return count_field(lines, "ip").most_common(n)
 
 if __name__ == "__main__":
     print(parse_line('10.0.0.1 - - [17/Oct/2026:00:30:00 +1100] "GET /health HTTP/1.1" 201 372'))
