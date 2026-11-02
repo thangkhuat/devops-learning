@@ -14,7 +14,7 @@ def parse_line(line):
             "method" : fields[5].lstrip('"'),
             "path" : fields[6],
             "status" : int(fields[8]),
-            "bytes" : int(fields[9]),
+            "bytes" : int(fields[9]) if fields[9] != "-" else 0, #"-" means nobody, so we return 0
         }
     except (IndexError, ValueError):
         return None

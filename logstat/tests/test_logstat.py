@@ -2,6 +2,8 @@ from logstat import parse_line, count_statuses, top_ips
 
 LINE = '10.0.0.1 - - [17/Oct/2026:00:30:00 +1100] "GET /health HTTP/1.1" 201 372'
 
+NOBODY_LINE = '10.0.0.1 - - [02/Nov/2026:10:00:00 +0000] "GET /index.html HTTP/1.1" 304 -'
+
 LINES = [
     '10.0.0.1 - - [17/Oct/2026:00:30:00 +1100] "GET /health HTTP/1.1" 200 372',
     '192.168.1.20 - - [17/Oct/2026:14:43:00 +1100] "GET / HTTP/1.1" 200 338',
@@ -20,6 +22,14 @@ def test_parse_line_extracts_fields():
 def test_parse_line_returns_none_for_bad_lines():
     assert parse_line("garbage") is None
     assert parse_line('10.0.0.1 - - [17/Oct/2026:00:30:00 +1100] "GET / HTTP/1.1" OK 338') is None
+
+def test_parse_line_returns_values_for_nobody_line():
+    result = parse_line(NOBODY_LINE)
+    assert result["ip"] == "10.0.0.1"
+    assert result["method"] == "GET"
+    assert result["path"] == "/index.html"
+    assert result["status"] == 304
+    assert result["bytes"] == 0
 
 def test_count_statuses_counts_codes():
     result = count_statuses(LINES)
