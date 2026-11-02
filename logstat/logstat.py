@@ -16,14 +16,22 @@ def parse_line(line):
     except (IndexError, ValueError):
         return None
 
-def count_statuses(lines):
+def count_field(lines, field):
     counts = Counter()
     for line in lines:
         result = parse_line(line)
         if result is None:
             continue
-        counts[result["status"]] += 1
+        counts[result[field]] += 1
     return counts
+
+def count_statuses(lines):
+    result = count_field(lines, "status")
+    return result
+
+def top_ips(lines, n):
+    result = count_field(lines, "ip")
+    return result.most_common(n)
 
 if __name__ == "__main__":
     print(parse_line('10.0.0.1 - - [17/Oct/2026:00:30:00 +1100] "GET /health HTTP/1.1" 201 372'))
