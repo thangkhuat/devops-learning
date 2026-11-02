@@ -1,4 +1,6 @@
-from logstat import parse_line, count_statuses, top_ips
+import pytest
+
+from logstat import parse_line, count_statuses, top_ips, main
 
 LINE = '10.0.0.1 - - [17/Oct/2026:00:30:00 +1100] "GET /health HTTP/1.1" 201 372'
 
@@ -42,3 +44,9 @@ def test_top_ip_return_most_common_ip():
 def test_top_ip_with_more_than_available_ips():
     result = top_ips(LINES, 5)
     assert result == [('10.0.0.1',2), ('192.168.1.20',1)]
+    
+@pytest.mark.parametrize("test_input,expected", [(-3, 2), (0, 2)])
+def test_top_ip_rejects_non_positive(test_input, expected):
+    with pytest.raises(SystemExit) as exc_info: 
+        main(["access.log", "--top", str(test_input)])
+    assert exc_info.value.code == expected
