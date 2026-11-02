@@ -14,7 +14,7 @@ def parse_line(line):
             "method" : fields[5].lstrip('"'),
             "path" : fields[6],
             "status" : int(fields[8]),
-            "bytes" : int(fields[9]),
+            "bytes" : int(fields[9]) if fields[9] != "-" else 0, #"-" means nobody, so we return 0
         }
     except (IndexError, ValueError):
         return None
@@ -34,11 +34,20 @@ def count_statuses(lines):
 def top_ips(lines, n):
     return count_field(lines, "ip").most_common(n)
 
-def main():
+def positive_integer(value):
+    try:
+        ivalue = int(value)
+        if ivalue <= 0:
+            raise ValueError
+        return ivalue
+    except ValueError:
+        raise argparse.ArgumentTypeError(f"Top N must be a positive number, got {value}")
+    
+def main(argv=None):
     parser = argparse.ArgumentParser(description="Summarise an access log")
-    parser.add_argument("logfile")                       # required, positional ($1)
-    parser.add_argument("--top", type=int, default=5)    # optional flag
-    args = parser.parse_args()
+    parser.add_argument("logfile")                       
+    parser.add_argument("--top", type=positive_integer, default=5)    
+    args = parser.parse_args(argv)
 
     try:
         with open(args.logfile) as f:
